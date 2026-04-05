@@ -2,6 +2,7 @@ using ReactiveUI;
 using DeployPaladin.Core;
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -179,15 +180,18 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
     public bool IsWelcomeStep => CurrentStep?.Type == StepType.Welcome;
     public bool IsLicenseStep => CurrentStep?.Type == StepType.License;
     public bool IsFolderStep => CurrentStep?.Type == StepType.Folder;
+    public bool IsShortcutsStep => CurrentStep?.Type == StepType.Shortcuts;
     public bool IsInstallStep => CurrentStep?.Type == StepType.Install;
     public bool IsFinishStep => CurrentStep?.Type == StepType.Finish;
     public bool HasContentText => !string.IsNullOrEmpty(CurrentStep?.ContentText);
     public bool IsLastStep => _currentStepIndex == Steps.Length - 1;
     public bool ShowNormalNavigation => !IsAlreadyInstalled && !IsUninstallComplete;
-    public bool RequiresScroll => CurrentStep?.RequireScroll == true;
+    public bool RequiresScroll => CurrentStep?.Type == StepType.License && CurrentStep?.RequireScroll == true;
     public bool NextBlockedByScroll => RequiresScroll && !HasScrolledToBottom;
     public bool NextBlockedByFolder => IsFolderStep && IsDirectoryInvalid;
     public string NextButtonText => IsLastStep || IsUninstallComplete ? "Finish" : "Next";
+
+    public List<InstallerAction> OptionalActions => _lua.Actions.Where(a => a.IsOptional).ToList();
 
     // --- Commands ---
 
@@ -260,6 +264,7 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
         this.RaisePropertyChanged(nameof(IsWelcomeStep));
         this.RaisePropertyChanged(nameof(IsLicenseStep));
         this.RaisePropertyChanged(nameof(IsFolderStep));
+        this.RaisePropertyChanged(nameof(IsShortcutsStep));
         this.RaisePropertyChanged(nameof(IsInstallStep));
         this.RaisePropertyChanged(nameof(IsFinishStep));
         this.RaisePropertyChanged(nameof(HasContentText));
@@ -269,6 +274,7 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
         this.RaisePropertyChanged(nameof(RequiresScroll));
         this.RaisePropertyChanged(nameof(NextBlockedByScroll));
         this.RaisePropertyChanged(nameof(NextBlockedByFolder));
+        this.RaisePropertyChanged(nameof(OptionalActions));
     }
 
     private void NavigateTo(int index)

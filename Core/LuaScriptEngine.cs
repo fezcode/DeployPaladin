@@ -29,7 +29,7 @@ public class LuaScriptEngine
         _script.Globals["CreateRegistry"] = (Action<string, string, string, string>)CreateRegistry;
         _script.Globals["CheckRegistry"] = (Action<string, string, string>)CheckRegistry;
         _script.Globals["MkDir"] = (Action<string>)MkDir;
-        _script.Globals["CreateShortcut"] = (Action<string, string, string>)CreateShortcut;
+        _script.Globals["CreateShortcut"] = (Action<string, string, string, Table?>)CreateShortcut;
 
         // Image API
         _script.Globals["SetLeftPaneImage"] = (Action<string, string>)((path, mode) => SetImage(Metadata.LeftPaneImage, path, mode));
@@ -128,18 +128,30 @@ public class LuaScriptEngine
         Actions.Add(new InstallerAction { Type = ActionType.MkDir, Destination = path });
 
     /// <summary>
-    /// CreateShortcut(targetExe, shortcutLocation, name)
-    /// e.g. CreateShortcut("%INSTALLDIR%/App.exe", "%DESKTOP%", "My App")
-    /// e.g. CreateShortcut("%INSTALLDIR%/App.exe", "%STARTMENU%/MyCompany", "My App")
+    /// CreateShortcut(targetExe, shortcutLocation, name, optionsTable?)
+    /// optionsTable: { label = "Create Desktop Shortcut", isOptional = true, isSelected = true }
     /// </summary>
-    private void CreateShortcut(string targetExe, string shortcutLocation, string name) =>
-        Actions.Add(new InstallerAction
+    private void CreateShortcut(string targetExe, string shortcutLocation, string name, Table? options = null)
+    {
+        var action = new InstallerAction
         {
             Type = ActionType.CreateShortcut,
             Source = targetExe,
             Destination = shortcutLocation,
             ShortcutName = name
-        });
+        };
+
+        if (options != null)
+        {
+            action.Label = options.Get("label").String ?? name;
+            action.IsOptional = options.Get("isOptional").Boolean;
+            
+            var isSelected = options.Get("isSelected");
+            action.IsSelected = isSelected.Type == DataType.Boolean ? isSelected.Boolean : true;
+        }
+
+        Actions.Add(action);
+    }
 
     public void RunScript(string scriptName)
     {

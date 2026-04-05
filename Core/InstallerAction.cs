@@ -20,4 +20,9 @@ public class InstallerAction
     public string RegistryData { get; set; } = string.Empty;
     public string ShortcutName { get; set; } = string.Empty;
     public string ShortcutIcon { get; set; } = string.Empty;
+
+    // --- Options for Shortcuts / Consent ---
+    public bool IsSelected { get; set; } = true;
+    public bool IsOptional { get; set; }
+    public string Label { get; set; } = string.Empty;
 }

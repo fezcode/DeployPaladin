@@ -5,6 +5,7 @@ public enum StepType
     Welcome,
     License,
     Folder,
+    Shortcuts,
     Install,
     Finish
 }

@@ -169,6 +169,20 @@
                             </StackPanel>
                         </StackPanel>
 
+                        <!-- ──── Shortcuts / Optional Actions ──── -->
+                        <StackPanel Spacing="14" IsVisible="{Binding IsShortcutsStep}" VerticalAlignment="Top">
+                            <TextBlock Text="Select Optional Tasks:" FontWeight="SemiBold"/>
+                            <ItemsControl ItemsSource="{Binding OptionalActions}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected}" 
+                                                  Content="{Binding Label}"
+                                                  Margin="0,4"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
                         <!-- ──── Install Progress ──── -->
                         <StackPanel Spacing="14" IsVisible="{Binding IsInstallStep}" VerticalAlignment="Center">
                             <ProgressBar Value="{Binding InstallProgress}" Minimum="0" Maximum="100"

@@ -22,6 +22,9 @@ public class ActionRunner
         {
             var action = actions[i];
 
+            if (action.IsOptional && !action.IsSelected)
+                continue;
+
             string src = ExpandVariables(action.Source, installDir);
             string dest = ExpandVariables(action.Destination, installDir);
 
