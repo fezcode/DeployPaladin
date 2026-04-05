@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DeployPaladin.Builder/DeployPaladin.Builder.csproj" />
+  <Project Path="DeployPaladin.csproj" />
+</Solution>

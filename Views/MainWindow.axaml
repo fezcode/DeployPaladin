@@ -1,0 +1,179 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DeployPaladin.ViewModels"
+        x:Class="DeployPaladin.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{Binding Metadata.AppName}"
+        Width="620" Height="440"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        Classes.Aqua="{Binding IsAqua}"
+        Classes.Win11="{Binding IsWin11}">
+
+    <Panel>
+        <!-- ════════ Background Image Layer ════════ -->
+        <Image Source="{Binding BackgroundBitmap}"
+               Stretch="UniformToFill"
+               IsVisible="{Binding HasBackground}"/>
+        <Border Classes="BackgroundGradient"
+                IsVisible="{Binding BackgroundIsGradient}"/>
+
+        <!-- ════════ Main Layout ════════ -->
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,*,Auto">
+
+            <!-- ════════ Top Pane Image ════════ -->
+            <Panel Grid.Row="0" Grid.ColumnSpan="2"
+                   IsVisible="{Binding HasTopPane}"
+                   Height="80">
+                <Image Source="{Binding TopPaneBitmap}"
+                       Stretch="UniformToFill"/>
+                <Border Classes="TopPaneGradient"
+                        IsVisible="{Binding TopPaneIsGradient}"/>
+            </Panel>
+
+            <!-- ════════ Left Pane Image ════════ -->
+            <Panel Grid.Row="0" Grid.RowSpan="2"
+                   IsVisible="{Binding HasLeftPane}"
+                   Width="180">
+                <Image Source="{Binding LeftPaneBitmap}"
+                       Stretch="UniformToFill"/>
+                <Border Classes="LeftPaneGradient"
+                        IsVisible="{Binding LeftPaneIsGradient}"/>
+            </Panel>
+
+            <!-- ════════ Content Area ════════ -->
+            <Border Grid.Row="1" Grid.Column="1"
+                    Padding="30,20,30,10"
+                    Classes="ContentArea"
+                    x:Name="ContentArea">
+                <Grid RowDefinitions="Auto,Auto,*">
+
+                    <!-- Title -->
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding CurrentStep.Title}"
+                               Classes="StepTitle"
+                               IsVisible="{Binding ShowNormalNavigation}"/>
+
+                    <!-- Description -->
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding CurrentStep.Description}"
+                               TextWrapping="Wrap"
+                               Classes="StepDescription"
+                               Margin="0,6,0,0"
+                               IsVisible="{Binding ShowNormalNavigation}"/>
+
+                    <!-- Step content area -->
+                    <Grid Grid.Row="2" Margin="0,14,0,0">
+
+                        <!-- ──── Already Installed ──── -->
+                        <StackPanel Spacing="14" IsVisible="{Binding IsAlreadyInstalled}" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding Metadata.AppName}" Classes="StepTitle"/>
+                            <TextBlock Text="This application is already installed on your system."
+                                       TextWrapping="Wrap" FontWeight="SemiBold" Foreground="#C42B1C"/>
+                            <TextBlock Text="What would you like to do?"
+                                       Classes="StepDescription"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,8,0,0">
+                                <Button Content="Reinstall" Command="{Binding ReinstallCommand}"
+                                        Classes.Aqua="{Binding IsAqua}" Classes.AquaPrimary="{Binding IsAqua}"
+                                        Classes.Win11="{Binding IsWin11}"/>
+                                <Button Content="Uninstall" Command="{Binding UninstallCommand}"
+                                        Classes.Aqua="{Binding IsAqua}" Classes.Win11Standard="{Binding IsWin11}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- ──── Uninstall Complete ──── -->
+                        <StackPanel Spacing="14" IsVisible="{Binding IsUninstallComplete}" VerticalAlignment="Top">
+                            <TextBlock Text="Uninstall Complete" Classes="StepTitle"/>
+                            <TextBlock TextWrapping="Wrap" Classes="StepDescription">
+                                <Run Text="{Binding Metadata.AppName}"/>
+                                <Run Text=" has been successfully removed from your computer."/>
+                            </TextBlock>
+                            <TextBlock Text="All files and registry entries have been deleted."
+                                       Classes="StepDescription" Margin="0,4,0,0"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,16,0,0">
+                                <Button Content="Finish" Command="{Binding FinishAfterUninstallCommand}"
+                                        Classes.Aqua="{Binding IsAqua}" Classes.AquaPrimary="{Binding IsAqua}"
+                                        Classes.Win11="{Binding IsWin11}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- ──── License (scrollable) ──── -->
+                        <Grid IsVisible="{Binding HasContentText}" RowDefinitions="*,Auto">
+                            <ScrollViewer x:Name="LicenseScroll"
+                                          Classes="LicenseBox"
+                                          Height="180"
+                                          BorderThickness="1"
+                                          Padding="12,10">
+                                <TextBlock Text="{Binding CurrentStep.ContentText}"
+                                           TextWrapping="Wrap" FontSize="12"
+                                           FontFamily="Cascadia Mono, Consolas, Courier New, monospace"/>
+                            </ScrollViewer>
+                            <TextBlock Grid.Row="1"
+                                       Text="Please scroll to the bottom to continue."
+                                       FontSize="11"
+                                       Foreground="#C42B1C"
+                                       Margin="0,6,0,0"
+                                       IsVisible="{Binding NextBlockedByScroll}"/>
+                        </Grid>
+
+                        <!-- ──── Folder Selection ──── -->
+                        <StackPanel Spacing="10" IsVisible="{Binding IsFolderStep}" VerticalAlignment="Top">
+                            <TextBlock Text="Select Installation Directory:" FontWeight="SemiBold"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Text="{Binding SelectedBaseDir, UpdateSourceTrigger=PropertyChanged}"
+                                         VerticalAlignment="Center"
+                                         Watermark="Enter or browse for a directory..."/>
+                                <Button Grid.Column="1" Content="Browse..." Click="OnBrowseClick" Margin="8,0,0,0"
+                                        Classes.Aqua="{Binding IsAqua}" Classes.Win11Standard="{Binding IsWin11}"/>
+                            </Grid>
+                            <StackPanel Margin="0,8,0,0">
+                                <TextBlock Text="Files will be installed to:" FontSize="12" Classes="StepDescription"/>
+                                <TextBlock Text="{Binding FinalInstallDir}" FontSize="13" FontWeight="SemiBold" Foreground="#005FB8"
+                                           Margin="0,2,0,0"/>
+                                <TextBlock Text="{Binding DirectoryWarning}"
+                                           Foreground="#C42B1C"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Margin="0,8,0,0" TextWrapping="Wrap"
+                                           IsVisible="{Binding IsDirectoryInvalid}"/>
+                                <TextBlock Text="Warning: Directory is not empty. Existing files may be overwritten."
+                                           Foreground="#C42B1C"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Margin="0,8,0,0" TextWrapping="Wrap"
+                                           IsVisible="{Binding IsDirectoryNotEmpty}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- ──── Install Progress ──── -->
+                        <StackPanel Spacing="14" IsVisible="{Binding IsInstallStep}" VerticalAlignment="Center">
+                            <ProgressBar Value="{Binding InstallProgress}" Minimum="0" Maximum="100"
+                                         Classes.Aqua="{Binding IsAqua}" Classes.Win11="{Binding IsWin11}"/>
+                            <TextBlock Text="{Binding InstallStatusText}" FontSize="12"
+                                       HorizontalAlignment="Center" Classes="StepDescription"/>
+                        </StackPanel>
+
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ════════ Navigation Bar ════════ -->
+            <Border Grid.Row="2" Grid.ColumnSpan="2"
+                    Classes="NavBar"
+                    Padding="16,12"
+                    BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                    <Button Content="Back" Command="{Binding BackCommand}"
+                            IsVisible="{Binding ShowNormalNavigation}"
+                            Classes.Aqua="{Binding IsAqua}" Classes.Win11Standard="{Binding IsWin11}"/>
+                    <Button Content="{Binding NextButtonText}" Command="{Binding NextCommand}"
+                            IsVisible="{Binding ShowNormalNavigation}"
+                            Classes.Aqua="{Binding IsAqua}" Classes.AquaPrimary="{Binding IsAqua}"
+                            Classes.Win11="{Binding IsWin11}"/>
+                    <Button Content="Cancel" Click="OnCancelClick"
+                            IsVisible="{Binding !IsLastStep}"
+                            Classes.Aqua="{Binding IsAqua}" Classes.Win11Standard="{Binding IsWin11}"/>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+    </Panel>
+</Window>

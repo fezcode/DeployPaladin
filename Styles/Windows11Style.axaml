@@ -1,0 +1,187 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════
+         Windows 11 / WinUI 3 Authentic Theme
+         ═══════════════════════════════════════════════ -->
+
+    <!-- Window: Mica-like light surface -->
+    <Style Selector="Window.Win11">
+        <Setter Property="Background" Value="#F5F5F5"/>
+        <Setter Property="Foreground" Value="#191919"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI Variable, Segoe UI, sans-serif"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <!-- Step title -->
+    <Style Selector="Window.Win11 TextBlock.StepTitle">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#191919"/>
+        <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI Variable, Segoe UI, sans-serif"/>
+    </Style>
+
+    <!-- Step description -->
+    <Style Selector="Window.Win11 TextBlock.StepDescription">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#5D5D5D"/>
+        <Setter Property="LineHeight" Value="20"/>
+    </Style>
+
+    <!-- Navigation bar -->
+    <Style Selector="Window.Win11 Border.NavBar">
+        <Setter Property="Background" Value="#FBFBFB"/>
+        <Setter Property="BorderBrush" Value="#E5E5E5"/>
+    </Style>
+
+    <!-- ── Accent Button (Next / Finish / Reinstall) ── -->
+    <Style Selector="Button.Win11">
+        <Setter Property="Background" Value="#005FB8"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="28,7"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.06"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.Win11:pointerover">
+        <Setter Property="Background" Value="#1A6DC1"/>
+    </Style>
+
+    <Style Selector="Button.Win11:pressed">
+        <Setter Property="Background" Value="#2D7FD3"/>
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+
+    <Style Selector="Button.Win11:disabled">
+        <Setter Property="Background" Value="#BFBFBF"/>
+        <Setter Property="Foreground" Value="#9A9A9A"/>
+    </Style>
+
+    <!-- ── Secondary Button (Back / Cancel / Browse / Uninstall) ── -->
+    <Style Selector="Button.Win11Standard">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="Foreground" Value="#191919"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#D1D1D1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="28,7"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.12"/>
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.12"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.06"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.Win11Standard:pointerover">
+        <Setter Property="Background" Value="#F9F9F9"/>
+        <Setter Property="BorderBrush" Value="#C0C0C0"/>
+    </Style>
+
+    <Style Selector="Button.Win11Standard:pressed">
+        <Setter Property="Background" Value="#F0F0F0"/>
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+
+    <!-- ── Win11 ProgressBar ── -->
+    <Style Selector="ProgressBar.Win11">
+        <Setter Property="Height" Value="3"/>
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <Setter Property="Foreground" Value="#005FB8"/>
+        <Setter Property="CornerRadius" Value="1.5"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <Border x:Name="PART_Indicator"
+                            Background="{TemplateBinding Foreground}"
+                            HorizontalAlignment="Left"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Width" Duration="0:0:0.25" Easing="CubicEaseOut"/>
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- ── Win11 TextBox ── -->
+    <Style Selector="Window.Win11 TextBox">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#D1D1D1"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <!-- ── Win11 ScrollViewer for license ── -->
+    <Style Selector="Window.Win11 ScrollViewer.LicenseBox">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#D6D6D6"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+
+    <!-- ── Content fade-in animation ── -->
+    <Style Selector="Border.ContentArea">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform" Value="translateY(0)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.3" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- ── Image pane gradient fade (right edge) ── -->
+    <Style Selector="Window.Win11 Border.LeftPaneGradient">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="85%,0%" EndPoint="100%,0%">
+                    <GradientStop Offset="0" Color="#00F5F5F5"/>
+                    <GradientStop Offset="1" Color="#FFF5F5F5"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Window.Win11 Border.TopPaneGradient">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,70%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#00F5F5F5"/>
+                    <GradientStop Offset="1" Color="#FFF5F5F5"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Window.Win11 Border.BackgroundGradient">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#88F5F5F5"/>
+                    <GradientStop Offset="1" Color="#FFF5F5F5"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</Styles>

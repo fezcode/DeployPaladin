@@ -1,0 +1,281 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════
+         Mac OS X Aqua / Tiger-era Authentic Theme
+         ═══════════════════════════════════════════════ -->
+
+    <!-- Window: Brushed-metal pinstripe -->
+    <Style Selector="Window.Aqua">
+        <Setter Property="Foreground" Value="#222222"/>
+        <Setter Property="FontFamily" Value="Lucida Grande, Helvetica Neue, Helvetica, Arial, sans-serif"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#E8E8E8"/>
+                    <GradientStop Offset="0.3" Color="#D4D4D4"/>
+                    <GradientStop Offset="0.7" Color="#DBDBDB"/>
+                    <GradientStop Offset="1" Color="#CCCCCC"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Step title -->
+    <Style Selector="Window.Aqua TextBlock.StepTitle">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#1A1A1A"/>
+        <Setter Property="FontFamily" Value="Lucida Grande, Helvetica Neue, sans-serif"/>
+    </Style>
+
+    <!-- Step description -->
+    <Style Selector="Window.Aqua TextBlock.StepDescription">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#444444"/>
+        <Setter Property="LineHeight" Value="17"/>
+    </Style>
+
+    <!-- Navigation bar: lighter brushed metal -->
+    <Style Selector="Window.Aqua Border.NavBar">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#E0E0E0"/>
+                    <GradientStop Offset="1" Color="#C8C8C8"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#A0A0A0"/>
+    </Style>
+
+    <!-- ── Aqua Jelly Button (Standard / Secondary) ── -->
+    <Style Selector="Button.Aqua">
+        <Setter Property="Height" Value="26"/>
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="Padding" Value="16,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="CornerRadius" Value="13"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="#8A8A8A"/>
+        <Setter Property="Foreground" Value="#1A1A1A"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#FEFEFE"/>
+                    <GradientStop Offset="0.48" Color="#EDEDED"/>
+                    <GradientStop Offset="0.52" Color="#DFDFDF"/>
+                    <GradientStop Offset="1" Color="#F0F0F0"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.08"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.04"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <!-- Drop shadow -->
+                    <Border CornerRadius="13" Margin="0,1,0,-1" Background="#18000000"/>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="13" ClipToBounds="True">
+                        <Panel>
+                            <!-- Glass highlight top -->
+                            <Border Height="10" VerticalAlignment="Top" Margin="2,1,2,0" CornerRadius="9">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                        <GradientStop Offset="0" Color="#CCFFFFFF"/>
+                                        <GradientStop Offset="1" Color="#11FFFFFF"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              Padding="{TemplateBinding Padding}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Panel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.Aqua:pressed">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#D8D8D8"/>
+                    <GradientStop Offset="1" Color="#C4C4C4"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransform" Value="scale(0.97)"/>
+    </Style>
+
+    <!-- ── Pulsing Blue Aqua Button (Primary / Next / Reinstall) ── -->
+    <Style Selector="Button.AquaPrimary">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#1B4F8A"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#6CB5F9"/>
+                    <GradientStop Offset="0.48" Color="#3A8DE5"/>
+                    <GradientStop Offset="0.52" Color="#1A6FCC"/>
+                    <GradientStop Offset="1" Color="#3B8FE6"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.AquaPrimary:pressed">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#1A6FCC"/>
+                    <GradientStop Offset="1" Color="#0E5099"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.AquaPrimary:disabled">
+        <Setter Property="Foreground" Value="#AAAAAA"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#B5D4F0"/>
+                    <GradientStop Offset="0.5" Color="#8FBDE3"/>
+                    <GradientStop Offset="1" Color="#B0D0EC"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#7EAED0"/>
+    </Style>
+
+    <!-- ── Aqua 3D Glass-Tube ProgressBar ── -->
+    <Style Selector="ProgressBar.Aqua">
+        <Setter Property="Height" Value="18"/>
+        <Setter Property="CornerRadius" Value="9"/>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#B8B8B8"/>
+                    <GradientStop Offset="0.4" Color="#E0E0E0"/>
+                    <GradientStop Offset="0.6" Color="#D8D8D8"/>
+                    <GradientStop Offset="1" Color="#C4C4C4"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#888888"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="9" ClipToBounds="True">
+                    <Panel>
+                        <!-- Inner shadow top -->
+                        <Border BorderBrush="#30000000" BorderThickness="0,1,0,0" CornerRadius="9"/>
+
+                        <!-- Blue candy fill -->
+                        <Border x:Name="PART_Indicator" HorizontalAlignment="Left" CornerRadius="9">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Offset="0" Color="#62B6FF"/>
+                                    <GradientStop Offset="0.45" Color="#2E90FF"/>
+                                    <GradientStop Offset="0.55" Color="#0066EE"/>
+                                    <GradientStop Offset="1" Color="#2888FF"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <!-- Top glass glare -->
+                        <Border Height="7" VerticalAlignment="Top" Margin="2,1,2,0" CornerRadius="6">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Offset="0" Color="#BBFFFFFF"/>
+                                    <GradientStop Offset="1" Color="#08FFFFFF"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <!-- ── Aqua TextBox ── -->
+    <Style Selector="Window.Aqua TextBox">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#999999"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Padding" Value="6,4"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+
+    <!-- ── Aqua license scroll area ── -->
+    <Style Selector="Window.Aqua ScrollViewer.LicenseBox">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderBrush" Value="#999999"/>
+        <Setter Property="CornerRadius" Value="3"/>
+    </Style>
+
+    <!-- ── Content animation ── -->
+    <Style Selector="Border.ContentArea">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform" Value="translateY(0)"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.25" Easing="CubicEaseOut"/>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="CubicEaseOut"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- ── Aqua gradient fades for image panes ── -->
+    <Style Selector="Window.Aqua Border.LeftPaneGradient">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="80%,0%" EndPoint="100%,0%">
+                    <GradientStop Offset="0" Color="#00D4D4D4"/>
+                    <GradientStop Offset="1" Color="#FFD4D4D4"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Window.Aqua Border.TopPaneGradient">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,65%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#00D4D4D4"/>
+                    <GradientStop Offset="1" Color="#FFD4D4D4"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Window.Aqua Border.BackgroundGradient">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Offset="0" Color="#88D4D4D4"/>
+                    <GradientStop Offset="1" Color="#FFD4D4D4"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</Styles>
