@@ -6,7 +6,7 @@
         Title="{Binding Metadata.AppName}"
         Width="620" Height="440"
         WindowStartupLocation="CenterScreen"
-        CanResize="False"
+        CanResize="True"
         Classes.Aqua="{Binding IsAqua}"
         Classes.Win11="{Binding IsWin11}">
 
@@ -46,24 +46,48 @@
                     Padding="30,20,30,10"
                     Classes="ContentArea"
                     x:Name="ContentArea">
-                <Grid RowDefinitions="Auto,Auto,*">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
+
+                    <!-- Breadcrumbs / Timeline -->
+                    <ItemsControl Grid.Row="0" Margin="0,0,0,15" ItemsSource="{Binding StepProgress}"
+                                  IsVisible="{Binding ShowNormalNavigation}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="6" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:StepProgressViewModel">
+                                <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                    <Border Classes="TimelineDot" Classes.Active="{Binding IsActive}" Classes.Past="{Binding IsPast}">
+                                        <TextBlock Text="{Binding Index}" Classes="TimelineDotText" Classes.Active="{Binding IsActive}" Classes.Past="{Binding IsPast}" />
+                                    </Border>
+                                    <TextBlock Text="{Binding Title}" Classes="TimelineText" Classes.Active="{Binding IsActive}" Classes.Past="{Binding IsPast}" />
+                                    <TextBlock Text="›" Margin="2,0,-2,0" Classes="TimelineChevron" IsVisible="{Binding !IsLast}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                     <!-- Title -->
-                    <TextBlock Grid.Row="0"
+                    <TextBlock Grid.Row="1"
                                Text="{Binding CurrentStep.Title}"
                                Classes="StepTitle"
                                IsVisible="{Binding ShowNormalNavigation}"/>
 
                     <!-- Description -->
-                    <TextBlock Grid.Row="1"
+                    <TextBlock Grid.Row="2"
                                Text="{Binding CurrentStep.Description}"
                                TextWrapping="Wrap"
                                Classes="StepDescription"
                                Margin="0,6,0,0"
                                IsVisible="{Binding ShowNormalNavigation}"/>
 
+                    <!-- Gradient Horizontal Line -->
+                    <Border Grid.Row="3" Classes="HeaderSeparator" Margin="0,15,0,5" IsVisible="{Binding ShowNormalNavigation}" />
+
                     <!-- Step content area -->
-                    <Grid Grid.Row="2" Margin="0,14,0,0">
+                    <Grid Grid.Row="4" Margin="0,10,0,0" x:Name="StepContentGrid">
 
                         <!-- ──── Already Installed ──── -->
                         <StackPanel Spacing="14" IsVisible="{Binding IsAlreadyInstalled}" VerticalAlignment="Top">

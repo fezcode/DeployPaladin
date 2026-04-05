@@ -11,6 +11,34 @@ using Avalonia.Threading;
 
 namespace DeployPaladin.ViewModels;
 
+public class StepProgressViewModel : ViewModelBase
+{
+    private bool _isActive;
+    public bool IsActive
+    {
+        get => _isActive;
+        set => this.RaiseAndSetIfChanged(ref _isActive, value);
+    }
+
+    private bool _isPast;
+    public bool IsPast
+    {
+        get => _isPast;
+        set => this.RaiseAndSetIfChanged(ref _isPast, value);
+    }
+
+    public string Title { get; }
+    public int Index { get; }
+    public bool IsLast { get; }
+
+    public StepProgressViewModel(string title, int index, bool isLast)
+    {
+        Title = title;
+        Index = index;
+        IsLast = isLast;
+    }
+}
+
 public class MainWindowViewModel : ViewModelBase, IDisposable
 {
     private readonly BundleReader _bundle;
@@ -19,6 +47,7 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
 
     public InstallerMetadata Metadata { get; }
     public WizardStep[] Steps { get; }
+    public StepProgressViewModel[] StepProgress { get; }
 
     // --- Image bitmaps ---
     public Bitmap? LeftPaneBitmap { get; }
@@ -174,6 +203,7 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
 
         Metadata = _lua.Metadata;
         Steps = _lua.Steps.ToArray();
+        StepProgress = Steps.Select((s, i) => new StepProgressViewModel(s.Title, i + 1, i == Steps.Length - 1)).ToArray();
 
         // Load images
         LeftPaneBitmap = LoadBitmap(Metadata.LeftPaneImage.Path);
@@ -242,6 +272,13 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
         if (index < 0 || index >= Steps.Length) return;
         CurrentStepIndex = index;
         CurrentStep = Steps[index];
+
+        for (int i = 0; i < StepProgress.Length; i++)
+        {
+            StepProgress[i].IsActive = (i == index);
+            StepProgress[i].IsPast = (i < index);
+        }
+
         RaiseStepChanged();
     }
 
