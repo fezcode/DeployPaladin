@@ -28,9 +28,13 @@ Create a staging folder on your computer (e.g., `D:\Releases\StarfighterInstalle
 D:\Releases\StarfighterInstaller\
 ├── installer.lua
 ├── LICENSE.txt
+├── icon.ico
 ├── Game.exe
 ├── engine.dll
-└── config.json
+├── config.json
+└── assets/
+    ├── textures/
+    └── sounds/
 ```
 
 **Step 3: Write the Lua Script**
@@ -45,11 +49,13 @@ SetMetadata("Company", "Workhammer Studios")
 -- Choose the theme: "Windows11" or "Aqua"
 SetTheme("Windows11")
 SetInstallDirSuffix("StarfighterPro")
+SetAppIcon("icon.ico")
 
 -- Define the Wizard UI Steps
 AddStep("Welcome", { title = "Welcome to Starfighter Pro", description = "Get ready to save the galaxy. \n\nClick Next to continue." })
 AddStep("License", { title = "EULA", description = "Please review the license terms.", contentFile = "LICENSE.txt" })
 AddStep("Folder", { title = "Choose Location", description = "Select where to install the game files." })
+AddStep("Shortcuts", { title = "Shortcuts", description = "Choose which shortcuts to create." })
 AddStep("Install", { title = "Installing...", description = "Deploying warp drives..." })
 AddStep("Finish", { title = "Ready to Play!", description = "Starfighter Pro has been successfully installed." })
 
@@ -58,6 +64,13 @@ MkDir("%INSTALLDIR%")
 CopyFiles("Game.exe", "%INSTALLDIR%/Game.exe")
 CopyFiles("engine.dll", "%INSTALLDIR%/engine.dll")
 CopyFiles("config.json", "%INSTALLDIR%/config.json")
+CopyDir("assets", "%INSTALLDIR%/assets")
+
+-- Shortcuts (optional ones appear as checkboxes on the Shortcuts step)
+CreateShortcut("%INSTALLDIR%/Game.exe", "%DESKTOP%", "Starfighter Pro",
+    { label = "Create Desktop Shortcut", isOptional = true, isSelected = true, icon = "%INSTALLDIR%/icon.ico" })
+CreateShortcut("%INSTALLDIR%/Game.exe", "%STARTMENU%", "Starfighter Pro",
+    { label = "Create Start Menu Shortcut", isOptional = true, isSelected = true })
 
 -- Check if already installed
 CheckRegistry("HKCU", "Software\\Workhammer\\Starfighter", "InstallDir")
@@ -86,12 +99,13 @@ The builder zips your game files and the Lua script, then appends them to the en
 
 You upload `Starfighter_Setup.exe` to your website. A player downloads it and double-clicks it.
 
-1. **Initialization:** The executable launches. The `BundleReader` checks its own file size, finds the hidden ZIP payload at the end of the `.exe`, and silently loads it into memory.
+1. **Initialization:** The executable launches. The `BundleReader` checks its own file size, finds the hidden ZIP payload at the end of the `.exe`, and silently loads it into memory. The custom icon (`icon.ico`) is applied to the window.
 2. **The Welcome Screen:** It reads the embedded `installer.lua` script, applies the "Windows 11" theme, and shows the Welcome text you wrote.
 3. **The License Screen:** The user clicks Next. The engine looks inside the hidden zip file, extracts the text from `LICENSE.txt`, and displays it in a scrollable box.
 4. **The Folder Screen:** The user is asked where to install it. It defaults to `C:\Program Files\StarfighterPro` (because of your suffix), but they can hit "Browse..." to change it to `D:\Games\StarfighterPro`.
-5. **The Install Screen:** The user clicks Next. The progress bar animates while the engine extracts `Game.exe`, `engine.dll`, and `config.json` from the internal zip directly onto the user's hard drive at their chosen location. It also writes to the Windows Registry.
-6. **The Finish Screen:** The "Next" button turns into "Finish". The player clicks it, the installer closes, and they are ready to play!
+5. **The Shortcuts Screen:** The user sees checkboxes for "Create Desktop Shortcut" and "Create Start Menu Shortcut". They can toggle each one on or off.
+6. **The Install Screen:** The user clicks Next. The progress bar animates while the engine extracts `Game.exe`, `engine.dll`, `config.json`, and the entire `assets/` directory from the internal zip directly onto the user's hard drive at their chosen location. It creates the selected shortcuts and writes to the Windows Registry.
+7. **The Finish Screen:** The "Next" button turns into "Finish". The player clicks it, the installer closes, and they are ready to play!
 
 ## 3. Re-running the Installer
 

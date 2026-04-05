@@ -73,6 +73,33 @@ public class BundleReader : IDisposable
         entry.ExtractToFile(destOnDisk, overwrite: true);
     }
 
+    public void ExtractDirectory(string sourceDirInZip, string destDirOnDisk)
+    {
+        if (_archive == null) return;
+
+        string prefix = sourceDirInZip.Replace("\\", "/").TrimEnd('/') + "/";
+
+        foreach (var entry in _archive.Entries)
+        {
+            string entryPath = entry.FullName.Replace("\\", "/");
+            if (!entryPath.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            // Skip directory entries
+            if (string.IsNullOrEmpty(entry.Name))
+                continue;
+
+            string relativePath = entryPath.Substring(prefix.Length);
+            string destPath = Path.Combine(destDirOnDisk, relativePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+            string? destDir = Path.GetDirectoryName(destPath);
+            if (destDir != null && !Directory.Exists(destDir))
+                Directory.CreateDirectory(destDir);
+
+            entry.ExtractToFile(destPath, overwrite: true);
+        }
+    }
+
     public void Dispose()
     {
         _archive?.Dispose();

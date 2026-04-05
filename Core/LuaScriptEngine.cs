@@ -27,6 +27,7 @@ public class LuaScriptEngine
         _script.Globals["SetInstallDirSuffix"] = (Action<string>)SetInstallDirSuffix;
         _script.Globals["AddStep"] = (Action<string, Table>)AddStep;
         _script.Globals["CopyFiles"] = (Action<string, string>)CopyFiles;
+        _script.Globals["CopyDir"] = (Action<string, string>)CopyDir;
         _script.Globals["CreateRegistry"] = (Action<string, string, string, string>)CreateRegistry;
         _script.Globals["CheckRegistry"] = (Action<string, string, string>)CheckRegistry;
         _script.Globals["MkDir"] = (Action<string>)MkDir;
@@ -106,6 +107,9 @@ public class LuaScriptEngine
 
     private void CopyFiles(string src, string dest) =>
         Actions.Add(new InstallerAction { Type = ActionType.CopyFiles, Source = src, Destination = dest });
+
+    private void CopyDir(string src, string dest) =>
+        Actions.Add(new InstallerAction { Type = ActionType.CopyDir, Source = src, Destination = dest });
 
     private void CreateRegistry(string hive, string key, string value, string data) =>
         Actions.Add(new InstallerAction

@@ -3,6 +3,7 @@ namespace DeployPaladin.Core;
 public enum ActionType
 {
     CopyFiles,
+    CopyDir,
     CreateRegistry,
     CheckRegistry,
     MkDir,

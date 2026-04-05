@@ -127,7 +127,6 @@
                         <Grid IsVisible="{Binding HasContentText}" RowDefinitions="*,Auto">
                             <ScrollViewer x:Name="LicenseScroll"
                                           Classes="LicenseBox"
-                                          Height="180"
                                           BorderThickness="1"
                                           Padding="12,10">
                                 <TextBlock Text="{Binding CurrentStep.ContentText}"

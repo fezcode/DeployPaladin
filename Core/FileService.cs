@@ -21,6 +21,36 @@ public class FileService
             Directory.CreateDirectory(path);
     }
 
+    public void CopyDir(string sourceDir, string destDir)
+    {
+        if (_bundle != null && _bundle.HasBundle)
+        {
+            _bundle.ExtractDirectory(sourceDir, destDir);
+            return;
+        }
+
+        // Fallback: resolve relative source from the exe's directory
+        string fullSource = Path.IsPathRooted(sourceDir)
+            ? sourceDir
+            : Path.Combine(_basePath, sourceDir);
+
+        if (!Directory.Exists(fullSource))
+            throw new DirectoryNotFoundException($"Source directory not found: {fullSource}");
+
+        if (!Directory.Exists(destDir))
+            Directory.CreateDirectory(destDir);
+
+        foreach (string file in Directory.GetFiles(fullSource, "*", SearchOption.AllDirectories))
+        {
+            string relativePath = Path.GetRelativePath(fullSource, file);
+            string destFile = Path.Combine(destDir, relativePath);
+            string? destFileDir = Path.GetDirectoryName(destFile);
+            if (destFileDir != null && !Directory.Exists(destFileDir))
+                Directory.CreateDirectory(destFileDir);
+            File.Copy(file, destFile, true);
+        }
+    }
+
     public void CopyFiles(string source, string destination)
     {
         if (_bundle != null && _bundle.HasBundle)

@@ -32,6 +32,7 @@ public class ActionRunner
             {
                 ActionType.MkDir => $"Creating directory: {dest}",
                 ActionType.CopyFiles => $"Copying: {action.Source}",
+                ActionType.CopyDir => $"Copying directory: {action.Source}",
                 ActionType.CreateRegistry => $"Writing registry: {action.RegistryKey}",
                 ActionType.CreateShortcut => $"Creating shortcut: {action.ShortcutName}",
                 _ => "Processing..."
@@ -44,6 +45,9 @@ public class ActionRunner
             {
                 case ActionType.CopyFiles:
                     _fileService.CopyFiles(src, dest);
+                    break;
+                case ActionType.CopyDir:
+                    _fileService.CopyDir(src, dest);
                     break;
                 case ActionType.MkDir:
                     _fileService.MkDir(dest);
