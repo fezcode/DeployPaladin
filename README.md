@@ -1,6 +1,10 @@
 # Deploy Paladin
 
+![Banner](Assets/Banner.png)
+
 A lightweight installer framework for Windows applications. Write a Lua script describing your installer wizard, bundle it with your files, and distribute a single setup executable.
+
+![DeployPaladin](Assets/DeployPaladin.png)
 
 ## Projects
 
