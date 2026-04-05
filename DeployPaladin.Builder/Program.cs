@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DeployPaladin.Builder;
 
@@ -70,25 +71,95 @@ class Program
         Console.WriteLine($"Output  : {outputExe}");
         Console.WriteLine();
 
-        // Create ZIP of the payload folder in memory
+        // Parse installer.lua to discover referenced files and directories
+        Console.WriteLine("Parsing installer.lua for referenced files...");
+        string luaContent = File.ReadAllText(luaPath);
+
+        var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "installer.lua" };
+        var dirs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        // CopyFiles("source", ...) — first argument is the payload source file
+        foreach (Match m in Regex.Matches(luaContent, @"CopyFiles\s*\(\s*""([^""]+)"""))
+            files.Add(m.Groups[1].Value);
+
+        // CopyDir("sourceDir", ...) — first argument is the payload source directory
+        foreach (Match m in Regex.Matches(luaContent, @"CopyDir\s*\(\s*""([^""]+)"""))
+            dirs.Add(m.Groups[1].Value);
+
+        // contentFile = "..." (e.g., LICENSE.txt)
+        foreach (Match m in Regex.Matches(luaContent, @"contentFile\s*=\s*""([^""]+)"""))
+            files.Add(m.Groups[1].Value);
+
+        // SetAppIcon("...")
+        foreach (Match m in Regex.Matches(luaContent, @"SetAppIcon\s*\(\s*""([^""]+)"""))
+            files.Add(m.Groups[1].Value);
+
+        // icon = "..." inside shortcut options (only literal payload paths, not %INSTALLDIR% refs)
+        foreach (Match m in Regex.Matches(luaContent, @"icon\s*=\s*""([^""]+)"""))
+        {
+            string val = m.Groups[1].Value;
+            if (!val.Contains('%'))
+                files.Add(val);
+        }
+
+        // Image APIs: SetLeftPaneImage, SetBackgroundImage, SetTopPaneImage
+        foreach (Match m in Regex.Matches(luaContent, @"Set(?:LeftPane|Background|TopPane)Image\s*\(\s*""([^""]+)"""))
+            files.Add(m.Groups[1].Value);
+
+        // Create ZIP of only the referenced files
         Console.WriteLine("Creating payload archive...");
         byte[] zipBytes;
-        int fileCount;
+        int fileCount = 0;
+        var missing = new List<string>();
+
         using (var zipStream = new MemoryStream())
         {
             using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: true))
             {
-                var files = Directory.GetFiles(payloadFolder, "*", SearchOption.AllDirectories);
-                fileCount = files.Length;
-                foreach (var file in files)
+                // Add individual files
+                foreach (var relPath in files)
                 {
-                    string relativePath = Path.GetRelativePath(payloadFolder, file).Replace('\\', '/');
-                    Console.WriteLine($"  Adding: {relativePath}");
-                    archive.CreateEntryFromFile(file, relativePath, CompressionLevel.Optimal);
+                    string fullPath = Path.Combine(payloadFolder, relPath.Replace('/', Path.DirectorySeparatorChar));
+                    if (!File.Exists(fullPath))
+                    {
+                        missing.Add(relPath);
+                        continue;
+                    }
+
+                    string entryName = relPath.Replace('\\', '/');
+                    Console.WriteLine($"  Adding: {entryName}");
+                    archive.CreateEntryFromFile(fullPath, entryName, CompressionLevel.Optimal);
+                    fileCount++;
+                }
+
+                // Add directories recursively
+                foreach (var relDir in dirs)
+                {
+                    string fullDir = Path.Combine(payloadFolder, relDir.Replace('/', Path.DirectorySeparatorChar));
+                    if (!Directory.Exists(fullDir))
+                    {
+                        missing.Add(relDir + "/");
+                        continue;
+                    }
+
+                    foreach (var file in Directory.GetFiles(fullDir, "*", SearchOption.AllDirectories))
+                    {
+                        string entryName = Path.GetRelativePath(payloadFolder, file).Replace('\\', '/');
+                        Console.WriteLine($"  Adding: {entryName}");
+                        archive.CreateEntryFromFile(file, entryName, CompressionLevel.Optimal);
+                        fileCount++;
+                    }
                 }
             }
 
             zipBytes = zipStream.ToArray();
+        }
+
+        if (missing.Count > 0)
+        {
+            Console.WriteLine();
+            foreach (var m in missing)
+                Console.Error.WriteLine($"Warning: Referenced path not found in payload: {m}");
         }
 
         Console.WriteLine($"Archive size: {zipBytes.Length:N0} bytes ({fileCount} files)");
@@ -119,10 +190,13 @@ class Program
         Console.WriteLine("  DeployPaladin.Builder --payload <folder> --base <exe> --output <exe>");
         Console.WriteLine();
         Console.WriteLine("Options:");
-        Console.WriteLine("  -p, --payload <folder>  Folder containing installer.lua, LICENSE.txt, and all files to install");
+        Console.WriteLine("  -p, --payload <folder>  Folder containing installer.lua and referenced payload files");
         Console.WriteLine("  -b, --base <exe>        Path to the published DeployPaladin installer executable");
         Console.WriteLine("  -o, --output <exe>      Path for the output bundled setup executable");
         Console.WriteLine("  -h, --help              Show this help message");
+        Console.WriteLine();
+        Console.WriteLine("The builder parses installer.lua and bundles only the files referenced by");
+        Console.WriteLine("CopyFiles, CopyDir, contentFile, SetAppIcon, and image instructions.");
         Console.WriteLine();
         Console.WriteLine("Example:");
         Console.WriteLine("  DeployPaladin.Builder --payload .\\MyApp --base .\\DeployPaladin.exe --output .\\MyApp_Setup.exe");

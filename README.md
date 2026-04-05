@@ -96,7 +96,7 @@ dotnet run --project DeployPaladin.Builder -- --payload .\MyAppInstaller --base 
 
 | Flag | Short | Description |
 |---|---|---|
-| `--payload` | `-p` | Folder containing `installer.lua`, `LICENSE.txt`, and all files to install |
+| `--payload` | `-p` | Folder containing `installer.lua` and referenced payload files |
 | `--base` | `-b` | Path to the published DeployPaladin installer executable |
 | `--output` | `-o` | Path for the output bundled setup executable |
 | `--help` | `-h` | Show help |
