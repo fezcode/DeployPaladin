@@ -243,6 +243,8 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
         CheckIfAlreadyInstalled();
     }
 
+    public byte[]? ResolveIconBytes() => _lua.ResolveImageBytes(Metadata.AppIcon);
+
     private Bitmap? LoadBitmap(string path)
     {
         if (string.IsNullOrEmpty(path)) return null;

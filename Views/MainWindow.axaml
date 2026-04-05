@@ -127,10 +127,10 @@
                         <Grid IsVisible="{Binding HasContentText}" RowDefinitions="*,Auto">
                             <ScrollViewer x:Name="LicenseScroll"
                                           Classes="LicenseBox"
-                                          BorderThickness="1"
-                                          Padding="12,10">
+                                          BorderThickness="1">
                                 <TextBlock Text="{Binding CurrentStep.ContentText}"
                                            TextWrapping="Wrap" FontSize="12"
+                                           Padding="12,10"
                                            FontFamily="Cascadia Mono, Consolas, Courier New, monospace"/>
                             </ScrollViewer>
                             <TextBlock Grid.Row="1"

@@ -23,9 +23,12 @@ public partial class MainWindow : Window
             {
                 try
                 {
-                    var uri = new Uri($"avares://DeployPaladin/{vm.Metadata.AppIcon}");
-                    var asset = Avalonia.Platform.AssetLoader.Open(uri);
-                    this.Icon = new Avalonia.Controls.WindowIcon(asset);
+                    byte[]? iconBytes = vm.ResolveIconBytes();
+                    if (iconBytes != null)
+                    {
+                        using var stream = new System.IO.MemoryStream(iconBytes);
+                        this.Icon = new Avalonia.Controls.WindowIcon(stream);
+                    }
                 }
                 catch (Exception ex)
                 {

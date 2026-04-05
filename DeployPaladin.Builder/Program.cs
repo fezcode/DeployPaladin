@@ -170,6 +170,27 @@ class Program
         Console.WriteLine("Building bundled installer...");
         File.Copy(baseExe, outputExe, overwrite: true);
 
+        // Patch the exe icon if SetAppIcon is specified
+        string? appIconPath = null;
+        var iconMatch = Regex.Match(luaContent, @"SetAppIcon\s*\(\s*""([^""]+)""");
+        if (iconMatch.Success)
+        {
+            string iconRelPath = iconMatch.Groups[1].Value;
+            string iconFullPath = Path.Combine(payloadFolder, iconRelPath.Replace('/', Path.DirectorySeparatorChar));
+            if (File.Exists(iconFullPath))
+            {
+                Console.WriteLine($"Patching exe icon: {iconRelPath}");
+                if (!IconPatcher.PatchIcon(outputExe, iconFullPath))
+                {
+                    Console.Error.WriteLine("Warning: Failed to patch exe icon, continuing with default icon.");
+                }
+            }
+            else
+            {
+                Console.Error.WriteLine($"Warning: Icon file not found: {iconRelPath}");
+            }
+        }
+
         using (var fs = new FileStream(outputExe, FileMode.Append, FileAccess.Write))
         {
             fs.Write(zipBytes, 0, zipBytes.Length);
