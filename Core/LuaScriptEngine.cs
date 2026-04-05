@@ -23,6 +23,7 @@ public class LuaScriptEngine
         // Register API functions
         _script.Globals["SetMetadata"] = (Action<string, string>)SetMetadata;
         _script.Globals["SetTheme"] = (Action<string>)SetTheme;
+        _script.Globals["SetAppIcon"] = (Action<string>)SetAppIcon;
         _script.Globals["SetInstallDirSuffix"] = (Action<string>)SetInstallDirSuffix;
         _script.Globals["AddStep"] = (Action<string, Table>)AddStep;
         _script.Globals["CopyFiles"] = (Action<string, string>)CopyFiles;
@@ -56,6 +57,7 @@ public class LuaScriptEngine
     }
 
     private void SetTheme(string theme) => Metadata.Theme = theme;
+    private void SetAppIcon(string iconPath) => Metadata.AppIcon = iconPath;
     private void SetInstallDirSuffix(string suffix) => Metadata.InstallDirSuffix = suffix;
 
     private static void SetImage(PaneImageConfig config, string path, string mode)
@@ -145,6 +147,7 @@ public class LuaScriptEngine
         {
             action.Label = options.Get("label").String ?? name;
             action.IsOptional = options.Get("isOptional").Boolean;
+            action.ShortcutIcon = options.Get("icon").String ?? "";
             
             var isSelected = options.Get("isSelected");
             action.IsSelected = isSelected.Type == DataType.Boolean ? isSelected.Boolean : true;

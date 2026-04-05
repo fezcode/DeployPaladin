@@ -19,6 +19,7 @@ public class InstallerMetadata
     public string Version { get; set; } = "1.0.0";
     public string Company { get; set; } = "Workhammer";
     public string Theme { get; set; } = "Windows11";
+    public string AppIcon { get; set; } = string.Empty;
     public string InstallDirSuffix { get; set; } = "DeployPaladin";
 
     public PaneImageConfig LeftPaneImage { get; set; } = new();

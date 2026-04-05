@@ -19,6 +19,20 @@ public partial class MainWindow : Window
     {
         if (DataContext is MainWindowViewModel vm)
         {
+            if (!string.IsNullOrEmpty(vm.Metadata.AppIcon))
+            {
+                try
+                {
+                    var uri = new Uri($"avares://DeployPaladin/{vm.Metadata.AppIcon}");
+                    var asset = Avalonia.Platform.AssetLoader.Open(uri);
+                    this.Icon = new Avalonia.Controls.WindowIcon(asset);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to load custom icon: {ex.Message}");
+                }
+            }
+
             vm.PropertyChanged += (s, ev) =>
             {
                 if (ev.PropertyName == nameof(MainWindowViewModel.CurrentStepIndex))
