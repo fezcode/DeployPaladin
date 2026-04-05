@@ -148,7 +148,11 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
     public bool HasScrolledToBottom
     {
         get => _hasScrolledToBottom;
-        set => this.RaiseAndSetIfChanged(ref _hasScrolledToBottom, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _hasScrolledToBottom, value);
+            this.RaisePropertyChanged(nameof(NextBlockedByScroll));
+        }
     }
 
     // --- Computed properties ---
@@ -422,11 +426,11 @@ public class MainWindowViewModel : ViewModelBase, IDisposable
     {
         if (RequiresScroll && !HasScrolledToBottom)
         {
-            // Consider "at bottom" when within 20px of the end
-            if (offset + viewport >= extent - 20)
+            // Handle case where text is too short to scroll OR user reached bottom
+            // extent > 0 ensures layout is ready
+            if (extent > 0 && (extent <= (viewport + 5) || offset + viewport >= extent - 20))
             {
                 HasScrolledToBottom = true;
-                this.RaisePropertyChanged(nameof(NextBlockedByScroll));
             }
         }
     }

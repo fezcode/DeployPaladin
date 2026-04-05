@@ -1,6 +1,9 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using DeployPaladin.ViewModels;
+using System;
 
 namespace DeployPaladin.Views;
 
@@ -9,6 +12,43 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        DataContextChanged += OnDataContextChanged;
+    }
+
+    private void OnDataContextChanged(object? sender, EventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.PropertyChanged += (s, ev) =>
+            {
+                if (ev.PropertyName == nameof(MainWindowViewModel.CurrentStepIndex))
+                {
+                    ResetScrollToTop();
+                    TriggerScrollCheck();
+                }
+            };
+        }
+    }
+
+    private void TriggerScrollCheck()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var licenseScroll = this.FindControl<ScrollViewer>("LicenseScroll");
+            if (licenseScroll != null && DataContext is MainWindowViewModel vm)
+            {
+                vm.OnLicenseScrollChanged(licenseScroll.Offset.Y, licenseScroll.Extent.Height, licenseScroll.Viewport.Height);
+            }
+        }, Avalonia.Threading.DispatcherPriority.Loaded);
+    }
+
+    private void ResetScrollToTop()
+    {
+        var licenseScroll = this.FindControl<ScrollViewer>("LicenseScroll");
+        if (licenseScroll != null)
+        {
+            licenseScroll.Offset = new Avalonia.Vector(0, 0);
+        }
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -19,6 +59,11 @@ public partial class MainWindow : Window
         if (licenseScroll != null)
         {
             licenseScroll.ScrollChanged += OnLicenseScrollChanged;
+            // Also check initial state in case we're already at bottom (small text)
+            if (DataContext is MainWindowViewModel vm)
+            {
+                vm.OnLicenseScrollChanged(licenseScroll.Offset.Y, licenseScroll.Extent.Height, licenseScroll.Viewport.Height);
+            }
         }
     }
 
